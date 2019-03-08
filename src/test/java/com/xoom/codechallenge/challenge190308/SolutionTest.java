@@ -61,6 +61,18 @@ public class SolutionTest {
         assertThat(output[4], is(FAIL));
     }
 
+    @Test
+    public void sampleTestCases3() throws Exception {
+        final String[] output = getStrings("/src/main/resources/input03.txt");
+
+        assertTrue(output.length > 0);
+        assertThat(output[0], is(SUCCESS));
+        assertThat(output[1], is(SUCCESS));
+        assertThat(output[2], is(FAIL));
+        assertThat(output[3], is(SUCCESS));
+        assertThat(output[4], is(SUCCESS));
+    }
+
     private String[] getStrings(final String s) throws FileNotFoundException {
         final InputStream sysIn = System.in;
         final PrintStream sysOut = System.out;

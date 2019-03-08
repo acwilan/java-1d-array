@@ -4,9 +4,54 @@ import java.util.Scanner;
 
 public class Solution {
 
+    private static final int MAX_DEPTH = 20;
+
+    enum MovementType {
+        PLUS_ONE,
+        MINUS_ONE,
+        LEAP,
+        INITIAL
+    }
+
+    private static boolean canWinAtPosition(int leap, int[] game, int position, MovementType movementType, int depth) {
+        // If we exceed depth (to avoid StackOverflow, let's try another way
+        if (depth > MAX_DEPTH) {
+            return false;
+        }
+        // If we exceeeded or arrived at the array n position, then we won!
+        if (position >= game.length - 1) {
+            return true;
+        }
+        return
+                // Leap movement allowed on anytime
+                (
+                        leap > 1 && (
+                                // Check whether we can move to the next position
+                                position + leap < game.length && game[position + leap] == 0
+                                // Or the next leap position would give us a win
+                                || position + leap >= game.length
+                        ) &&
+                        canWinAtPosition(leap, game, position + leap, MovementType.LEAP, depth + 1)
+                ) ||
+                // Movement to the right is only allowed if we don't come from a movement to the left
+                (
+                        movementType != MovementType.MINUS_ONE &&
+                        // Check if position on the right is 0, we are allowed to move to that position
+                        position + 1 < game.length && game[position + 1] == 0 &&
+                        canWinAtPosition(leap, game, position + 1, MovementType.PLUS_ONE, depth + 1)
+                ) ||
+                // Movement to the left is only allowed if we don't come from a movement on the right
+                (
+                        movementType != MovementType.PLUS_ONE &&
+                        // Check if position on the left is 0, we are allowed to move to that position
+                        position - 1 >= 0 && game[position - 1] == 0 &&
+                        canWinAtPosition(leap, game, position - 1, MovementType.MINUS_ONE, depth + 1)
+                );
+    }
+
     public static boolean canWin(int leap, int[] game) {
         // Return true if you can win the game; otherwise, return false.
-        return false;
+        return canWinAtPosition(leap, game, 0, MovementType.INITIAL, 0);
     }
 
     public static void main(String[] args) {
